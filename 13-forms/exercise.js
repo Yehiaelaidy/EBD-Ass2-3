@@ -13,6 +13,12 @@
 // The first three are started for you. The LAST one has no code — you write
 // it, and it is the one that ties the whole of Part 2 together.
 
+const form = document.querySelector("#product-form");
+const nameInput = document.querySelector("#name");
+const priceInput = document.querySelector("#price");
+const errorLine = document.querySelector("#error");
+const list = document.querySelector("#list");
+
 /**
  * Reads what is currently typed into the two boxes.
  *
@@ -24,9 +30,12 @@
  * @returns {{ name: string, price: number }}
  */
 export function readForm() {
-  // TODO: read .value off each input. Trim the name, and convert the price
-  // with Number().
-  throw new Error("readForm is not written yet");
+  const name = nameInput.value.trim();
+  const price = Number(priceInput.value);
+
+  return { name , price };
+  
+  
 }
 
 /**
@@ -35,8 +44,8 @@ export function readForm() {
  * @returns {void}
  */
 export function clearForm() {
-  // TODO: set each input's .value to an empty string.
-  throw new Error("clearForm is not written yet");
+  nameInput.value= "";
+  priceInput.value= "";
 }
 
 /**
@@ -52,9 +61,27 @@ export function clearForm() {
  * @returns {void}
  */
 export function renderList(items) {
-  // TODO: empty #list first, then build one card per item — the same card
-  // shape as module 12.
-  throw new Error("renderList is not written yet");
+  list.textContent = "";
+
+  for(const item of items){
+    const card = document.createElement("li");
+    card.classList.add("card");
+
+    const title = document.createElement("h3");
+    title.textContent = item.name;
+
+
+    const price = document.createElement("p");
+    price.classList.add("price");
+    price.textContent = `${item.price} EGP`;
+
+    card.append(title,price);
+    list.append(card);
+
+
+
+  }
+  
 }
 
 /**
@@ -86,4 +113,34 @@ export function renderList(items) {
  * Remember `export`.
  */
 
-// TODO: write wireForm here.
+export function wireForm(){
+  const items = [];
+
+  form.addEventListener("submit", (event) =>  {
+    event.preventDefault();
+
+
+    const {name , price} = readForm();
+
+    if(!name) {
+      errorLine.textContent = "Give the product a name.";
+      return;
+    }
+
+    if (!priceInput.value || !Number.isFinite(price) || price <= 0) {
+      errorLine.textContent = "Give the product a price.";
+      return;
+    }
+
+    errorLine.textContent = "";
+
+
+    items.push({ name , price });
+
+    renderList(items);
+    clearForm();
+    nameInput.focus();
+
+
+  } );
+}
